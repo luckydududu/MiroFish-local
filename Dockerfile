@@ -10,6 +10,9 @@ COPY --from=ghcr.io/astral-sh/uv:0.9.26 /uv /uvx /bin/
 
 WORKDIR /app
 
+# torch/sentence-transformers 体积较大，uv 默认 30s 下载超时不够
+ENV UV_HTTP_TIMEOUT=300
+
 # 先复制依赖描述文件以利用缓存
 COPY package.json package-lock.json ./
 COPY frontend/package.json frontend/package-lock.json ./frontend/
