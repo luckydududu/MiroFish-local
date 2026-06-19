@@ -27,8 +27,11 @@ RUN npm ci \
 COPY . .
 
 # 模拟独立环境（camel-oasis 与 graphiti-core 的 neo4j driver 版本冲突，需隔离）
+# 先装 CPU-only 版 torch（本机无 GPU），避免 sentence-transformers 间接拉入几 GB 的 CUDA 依赖
 RUN cd backend \
   && uv venv .venv-simulation --python 3.11 \
+  && uv pip install --python .venv-simulation/bin/python \
+       torch --index-url https://download.pytorch.org/whl/cpu \
   && uv pip install --python .venv-simulation/bin/python \
        camel-oasis==0.2.5 camel-ai==0.2.78 openai python-dotenv
 
